@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Checking session</title>
+  </head>
+  <body>
+    <!-- Keycloak loads this page in a hidden iframe to check for an existing SSO session without a full redirect. -->
+    <script>
+      parent.postMessage(location.href, location.origin);
+    </script>
+  </body>
+</html>

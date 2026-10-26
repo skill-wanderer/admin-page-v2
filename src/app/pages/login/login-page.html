@@ -1,0 +1,63 @@
+<main class="auth-screen bg-brand-pattern">
+  <section class="auth-card animate-fade-in-up" aria-labelledby="login-title">
+    <img class="mx-auto" src="skill-wanderer-favicon.svg" alt="" width="64" height="64" />
+
+    <div>
+      <p class="eyebrow">Skill-Wanderer Admin</p>
+      <h1 id="login-title" class="auth-title text-gradient mt-2">Sign in to continue</h1>
+    </div>
+
+    <p class="auth-lead">
+      This console is for Skill-Wanderer administrators. Sign in with your Skill-Wanderer SSO
+      account to continue.
+    </p>
+
+    @if (signedOut()) {
+      <p class="notice notice-success" role="status">
+        <app-icon name="circle-check" />
+        You've signed out. See you on the next path.
+      </p>
+    } @else if (reason() === 'expired') {
+      <p class="notice notice-info" role="status">
+        <app-icon name="info" />
+        Your session has ended. Sign in again to pick up where you left off.
+      </p>
+    }
+
+    @if (auth.error(); as error) {
+      <p class="notice notice-error" role="alert">
+        <app-icon name="circle-alert" />
+        {{ error }}
+      </p>
+    }
+
+    @if (auth.status() === 'unavailable') {
+      <button type="button" class="btn btn-primary w-full" (click)="retry()">
+        <app-icon name="refresh-cw" [size]="20" />
+        Try again
+      </button>
+    } @else {
+      <button
+        type="button"
+        class="btn btn-primary w-full"
+        [disabled]="redirecting()"
+        (click)="signIn()"
+      >
+        @if (redirecting()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Redirecting…
+        } @else {
+          <app-icon name="log-in" [size]="20" />
+          Sign in with SSO
+        }
+      </button>
+    }
+
+    <p class="auth-footnote">
+      <app-icon name="lock" [size]="14" />
+      Secured by Skill-Wanderer SSO · {{ ssoHost }}
+    </p>
+  </section>
+
+  <a class="auth-back" href="https://skill-wanderer.com">← Back to skill-wanderer.com</a>
+</main>

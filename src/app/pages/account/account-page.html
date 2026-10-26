@@ -1,0 +1,109 @@
+<app-page-header
+  eyebrow="Account"
+  heading="Your account"
+  description="Your Skill-Wanderer SSO identity, as this console sees it. Password, two-factor sign-in and sessions are managed in the SSO account console."
+>
+  <div class="btn-row">
+    @if (auth.accountConsoleUrl(); as url) {
+      <a class="btn btn-primary btn-sm" [href]="url" target="_blank" rel="noopener noreferrer">
+        <app-icon name="external-link" [size]="16" />
+        Manage SSO account
+      </a>
+    }
+    <button type="button" class="btn btn-outline btn-sm" (click)="signOut()">
+      <app-icon name="log-out" [size]="16" />
+      Sign out
+    </button>
+  </div>
+</app-page-header>
+
+@if (auth.user(); as user) {
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+    <section class="card" aria-labelledby="profile-title">
+      <div class="flex items-center gap-4">
+        <span class="avatar avatar-lg" aria-hidden="true">{{ user.initials }}</span>
+        <div class="min-w-0">
+          <h2 id="profile-title" class="section-title truncate">{{ user.name }}</h2>
+          <p class="truncate text-muted">&#64;{{ user.username }}</p>
+        </div>
+      </div>
+
+      <dl class="detail-list mt-6">
+        <div>
+          <dt class="flex items-center gap-2"><app-icon name="mail" [size]="16" /> Email</dt>
+          <dd class="flex flex-wrap items-center gap-2">
+            {{ user.email ?? 'Not set' }}
+            @if (user.email) {
+              @if (user.emailVerified) {
+                <span class="badge badge-success">Verified</span>
+              } @else {
+                <span class="badge badge-warning">Not verified</span>
+              }
+            }
+          </dd>
+        </div>
+        <div>
+          <dt class="flex items-center gap-2">
+            <app-icon name="fingerprint" [size]="16" /> User ID
+          </dt>
+          <dd>
+            <code>{{ user.id }}</code>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <div class="flex flex-col gap-6">
+      <section class="card" aria-labelledby="roles-title">
+        <h2 id="roles-title" class="section-title">Roles</h2>
+        <p class="mt-1 text-sm text-muted">Highlighted roles are the ones that open this admin.</p>
+        <ul class="chip-list mt-4">
+          @for (role of roles(); track role) {
+            <li>
+              <code
+                class="badge"
+                [class.badge-success]="auth.grantedAdminRoles().includes(role)"
+                [class.badge-neutral]="!auth.grantedAdminRoles().includes(role)"
+                >{{ role }}</code
+              >
+            </li>
+          } @empty {
+            <li class="text-muted">No roles besides Keycloak's defaults.</li>
+          }
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="session-title">
+        <h2 id="session-title" class="section-title">Session</h2>
+        <dl class="detail-list mt-4">
+          @if (auth.session(); as session) {
+            <div>
+              <dt class="flex items-center gap-2">
+                <app-icon name="clock" [size]="16" /> Signed in
+              </dt>
+              <dd>{{ session.signedInAt ? (session.signedInAt | date: 'medium') : 'Unknown' }}</dd>
+            </div>
+            <div>
+              <dt class="flex items-center gap-2">
+                <app-icon name="key-round" [size]="16" /> Token renews
+              </dt>
+              <dd>{{ session.tokenExpiresAt | date: 'mediumTime' }}</dd>
+            </div>
+          }
+          <div>
+            <dt>Realm</dt>
+            <dd>
+              <code>{{ keycloak.realm }}</code>
+            </dd>
+          </div>
+          <div>
+            <dt>Client</dt>
+            <dd>
+              <code>{{ keycloak.clientId }}</code>
+            </dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  </div>
+}

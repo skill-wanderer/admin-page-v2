@@ -1,0 +1,78 @@
+<main class="auth-screen bg-brand-pattern">
+  <section class="auth-card animate-fade-in-up" aria-labelledby="denied-title">
+    <span class="icon-badge icon-badge-danger mx-auto">
+      <app-icon name="shield-alert" [size]="26" />
+    </span>
+
+    <div>
+      <p class="eyebrow">Access denied</p>
+      <h1 id="denied-title" class="auth-title mt-2 text-white">
+        This account can't open the admin
+      </h1>
+    </div>
+
+    @if (auth.user(); as user) {
+      <p class="auth-lead">
+        You're signed in as <strong class="text-white">{{ user.name }}</strong
+        >{{ user.email ? ' (' + user.email + ')' : '' }}, but the admin needs one of these roles:
+      </p>
+
+      <ul class="chip-list justify-center" aria-label="Accepted roles">
+        @for (role of auth.adminRoles; track role) {
+          <li>
+            <code class="badge badge-brand">{{ role }}</code>
+          </li>
+        }
+      </ul>
+
+      <div class="text-sm text-muted">
+        <p class="label mb-2">Roles on this account</p>
+        <ul class="chip-list justify-center">
+          @for (role of roles(); track role) {
+            <li>
+              <code class="badge badge-neutral">{{ role }}</code>
+            </li>
+          } @empty {
+            <li>None besides Keycloak's defaults</li>
+          }
+        </ul>
+      </div>
+    }
+
+    @if (stillDenied()) {
+      <p class="notice notice-warning" role="status">
+        <app-icon name="triangle-alert" />
+        This account still has none of the accepted roles.
+      </p>
+    }
+
+    <div class="flex flex-col gap-3">
+      <button
+        type="button"
+        class="btn btn-primary w-full"
+        [disabled]="checking()"
+        (click)="checkAgain()"
+      >
+        @if (checking()) {
+          <span class="spinner" aria-hidden="true"></span>
+          Checking…
+        } @else {
+          <app-icon name="refresh-cw" [size]="20" />
+          Check again
+        }
+      </button>
+      <button type="button" class="btn btn-outline w-full" (click)="useAnotherAccount()">
+        <app-icon name="log-in" [size]="20" />
+        Use another account
+      </button>
+      <button type="button" class="btn btn-ghost w-full" (click)="signOut()">
+        <app-icon name="log-out" [size]="20" />
+        Sign out
+      </button>
+    </div>
+
+    <p class="auth-footnote">
+      Ask a Skill-Wanderer SSO administrator for the role, then check again.
+    </p>
+  </section>
+</main>

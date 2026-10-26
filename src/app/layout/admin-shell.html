@@ -1,0 +1,88 @@
+<a class="skip-link" href="#main" (click)="skipToContent($event)">Skip to content</a>
+
+<header class="topbar">
+  <a class="brand" routerLink="/dashboard" aria-label="Skill-Wanderer Admin dashboard">
+    <img src="skill-wanderer-favicon.svg" alt="" width="28" height="28" />
+    SKILL-WANDERER
+    <span class="brand-badge max-xs:hidden">Admin</span>
+  </a>
+
+  <button
+    #menuToggle
+    type="button"
+    class="nav-toggle"
+    aria-controls="admin-sidebar"
+    [attr.aria-expanded]="menuOpen()"
+    [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+    (click)="toggleMenu()"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
+
+<aside id="admin-sidebar" class="sidebar" [class.is-open]="menuOpen()">
+  <a
+    class="brand sidebar-brand"
+    routerLink="/dashboard"
+    aria-label="Skill-Wanderer Admin dashboard"
+  >
+    <img src="skill-wanderer-favicon.svg" alt="" width="36" height="36" />
+    <span class="brand-lockup">
+      SKILL-WANDERER
+      <span class="brand-sub">Admin console</span>
+    </span>
+  </a>
+
+  <nav aria-label="Admin">
+    @for (group of navGroups; track group.label) {
+      <div class="nav-group">
+        <p class="nav-group-label" [id]="'nav-group-' + $index">{{ group.label }}</p>
+        <ul class="nav-list" [attr.aria-labelledby]="'nav-group-' + $index">
+          @for (item of group.items; track item.path) {
+            <li>
+              <a
+                class="nav-item"
+                [routerLink]="item.path"
+                routerLinkActive="is-active"
+                ariaCurrentWhenActive="page"
+              >
+                <app-icon [name]="item.icon" />
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </nav>
+
+  @if (auth.user(); as user) {
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <span class="avatar" aria-hidden="true">{{ user.initials }}</span>
+        <div class="min-w-0">
+          <p class="user-name">{{ user.name }}</p>
+          @if (user.email) {
+            <p class="user-email">{{ user.email }}</p>
+          }
+        </div>
+      </div>
+      <button type="button" class="btn btn-outline btn-sm w-full" (click)="signOut()">
+        <app-icon name="log-out" />
+        Sign out
+      </button>
+    </div>
+  }
+</aside>
+
+@if (menuOpen()) {
+  <div class="nav-backdrop" aria-hidden="true" (click)="closeMenu()"></div>
+}
+
+<main #main id="main" class="content page-glow" tabindex="-1">
+  <div class="content-inner">
+    <router-outlet />
+  </div>
+</main>

@@ -1,0 +1,294 @@
+:host {
+  --topbar-height: calc(64px + env(safe-area-inset-top));
+  display: block;
+  min-height: 100dvh;
+}
+
+/* Logo, wordmark and badge, as in the skill-wanderer.com navbar. */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.3s ease;
+}
+
+.brand:hover {
+  transform: translateY(-2px);
+}
+
+.brand-badge {
+  border: 1px solid rgb(255 217 61 / 0.35);
+  border-radius: 50px;
+  padding: 1px 9px;
+  color: var(--color-accent);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The sidebar is too narrow for wordmark and badge on one line, so they stack. */
+.brand-lockup {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-sub {
+  color: var(--color-accent);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Top bar below 1024px: the site's fixed, blurred navbar. */
+.topbar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--topbar-height);
+  padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0
+    max(16px, env(safe-area-inset-left));
+  border-bottom: 1px solid rgb(255 107 53 / 0.1);
+  background: rgb(26 26 26 / 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* The site's three-bar menu button, which turns into an orange X. */
+.nav-toggle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.nav-toggle span {
+  width: 25px;
+  height: 3px;
+  margin: 3px 0;
+  border-radius: 2px;
+  background: var(--color-light);
+  transition: all 0.3s ease;
+}
+
+.nav-toggle[aria-expanded='true'] span:nth-child(1) {
+  background: var(--color-primary);
+  transform: translateY(9px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded='true'] span:nth-child(2) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded='true'] span:nth-child(3) {
+  background: var(--color-primary);
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Navigation: a panel that slides down from the top bar, or a sidebar on desktop. */
+.sidebar {
+  position: fixed;
+  top: var(--topbar-height);
+  right: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: calc(100dvh - var(--topbar-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px max(20px, env(safe-area-inset-right)) calc(28px + env(safe-area-inset-bottom))
+    max(20px, env(safe-area-inset-left));
+  border-bottom: 2px solid rgb(255 107 53 / 0.25);
+  background: var(--color-panel);
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.7);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-100%);
+  transition:
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+
+.sidebar.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.sidebar-brand {
+  display: none;
+}
+
+.nav-group + .nav-group {
+  margin-top: 20px;
+}
+
+.nav-group-label {
+  margin: 0 12px 8px;
+  color: var(--color-subtle);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--color-light);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background: rgb(255 107 53 / 0.08);
+  color: var(--color-primary);
+}
+
+.nav-item.is-active {
+  background: rgb(255 107 53 / 0.12);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.nav-item.is-active::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, var(--color-primary), var(--color-accent));
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgb(255 107 53 / 0.12);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-name,
+.user-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-name {
+  color: #fff;
+  font-weight: 600;
+}
+
+.user-email {
+  color: var(--color-muted);
+  font-size: 0.85rem;
+}
+
+.nav-backdrop {
+  position: fixed;
+  inset: var(--topbar-height) 0 0;
+  z-index: 30;
+  background: rgb(0 0 0 / 0.75);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.content {
+  min-height: 100dvh;
+  padding: calc(var(--topbar-height) + 28px) max(16px, env(safe-area-inset-right))
+    calc(64px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+.content:focus {
+  outline: none;
+}
+
+.content-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 40rem) {
+  .content {
+    padding-right: 32px;
+    padding-left: 32px;
+  }
+}
+
+/* Desktop: sidebar column next to the content, no top bar. */
+@media (min-width: 64rem) {
+  :host {
+    display: grid;
+    grid-template-columns: 272px minmax(0, 1fr);
+  }
+
+  .topbar,
+  .nav-backdrop {
+    display: none;
+  }
+
+  .sidebar {
+    position: sticky;
+    top: 0;
+    z-index: auto;
+    height: 100dvh;
+    max-height: none;
+    padding: 28px 20px;
+    border-right: 1px solid rgb(255 107 53 / 0.1);
+    border-bottom: none;
+    background: var(--color-darker);
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: none;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    margin: 0 4px 8px;
+  }
+
+  .content {
+    padding: 48px 48px 80px;
+  }
+}
